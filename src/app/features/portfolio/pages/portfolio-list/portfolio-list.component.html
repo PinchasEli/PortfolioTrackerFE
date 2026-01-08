@@ -1,0 +1,5 @@
+<ul *ngIf="portfolios$ | async as portfolios">
+    <li *ngFor="let p of portfolios">
+      {{ p.name }} – {{ p.BaseCurrency | currency }}
+    </li>
+</ul>

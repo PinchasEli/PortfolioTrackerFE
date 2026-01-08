@@ -1,0 +1,10 @@
+<div class="header">
+    <div class="header-left" (click)="navigateToHome()">
+        <img src="assets/images/logo.png" alt="Logo">
+    </div>
+    
+    <div class="header-right">
+        <p *ngIf="user">Welcome, {{ user.email }}</p>
+        <app-button label="Logout" type="button" (onClick)="logout()" />
+    </div>
+</div>

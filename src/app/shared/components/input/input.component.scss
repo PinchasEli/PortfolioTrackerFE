@@ -1,0 +1,22 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+
+    label {
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+  
+    input {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+  
+    small {
+      color: red;
+      margin-top: 4px;
+    }
+}
+  

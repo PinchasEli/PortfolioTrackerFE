@@ -1,0 +1,12 @@
+<table class="data-table">
+    <thead>
+      <tr>
+        <th *ngFor="let displayName of headerKeys">{{ displayName }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data" (click)="onRowSelect(row)">
+        <td *ngFor="let displayName of headerKeys">{{ row[getDataKey(displayName)] }}</td>
+      </tr>
+    </tbody>
+</table>

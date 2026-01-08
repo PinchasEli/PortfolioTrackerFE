@@ -1,0 +1,25 @@
+<div class="admin-page">
+  <header-list title="Customer Management"></header-list>
+  
+  <div class="page-actions">
+    <button class="btn btn-primary">+ Add Customer</button>
+  </div>
+
+  <generic-list 
+    [data]="customers" 
+    [headers]="headers"
+    [loading]="loading"
+    (rowSelect)="onRowSelect($event)"></generic-list>
+
+  <pagination-controls 
+    [totalCount]="totalCount" 
+    [pageSize]="pageSize" 
+    [currentPage]="currentPage" 
+    [totalItems]="totalCount"  
+    [loading]="loading" 
+    (pageSizeChanged)="onPageSizeChange($event)"
+    (nextPage)="onNextPage()"
+    (previousPage)="onPreviousPage()"
+    (pageChanged)="onPageChange($event)"></pagination-controls>
+</div>
+

@@ -1,0 +1,27 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    
+    .header-left {
+        cursor: pointer;
+        img {
+            width: 100px;
+            height: 100px;
+        }
+    }
+
+    .header-right {
+        display: flex;
+        gap: 1rem;
+
+        p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    }
+
+}
