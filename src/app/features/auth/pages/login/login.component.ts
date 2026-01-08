@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Router } from '@angular/router';
-
+import { LoggerService } from '../../../../core/services/logger.service';
 
 
 @Component({
@@ -17,8 +16,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private logger: LoggerService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -27,12 +26,10 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log(this.loginForm.value);
     if (this.loginForm.invalid) {
       return;
     }
     
-    // Clear previous error message
     this.errorMessage = '';
     this.loading = true;
     
@@ -42,9 +39,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        console.error('Login failed:', err);
-        
-        // Set error message from server or use default
+        this.logger.error('Login failed:', err);
         this.errorMessage = err?.error?.message || 'Login failed. Please check your credentials.';
       }
     });

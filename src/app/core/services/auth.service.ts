@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { User } from '../models/user.model';
 import { Role } from '../enums/role.enum';
 import { LoggerService } from './logger.service';
+import { CurrentUserService } from './current-user.service';
 
 
 @Injectable({
@@ -20,6 +21,7 @@ export class AuthService {
     constructor(
         private http: HttpClient, 
         private router: Router,
+        private currentUserService: CurrentUserService,
         private logger: LoggerService
     ) {}
   
@@ -33,8 +35,10 @@ export class AuthService {
         .pipe(
           tap(res => {
             localStorage.setItem(this.TOKEN_KEY, res.token);
-            localStorage.setItem(this.USER_KEY, JSON.stringify(res.user));
+            // updateCurrentUser will handle localStorage for user
+            this.currentUserService.updateCurrentUser(res.user);
             this.logger.log('User logged in successfully', res.user);
+            // Redirect after successful login
             this.redirectToDefaultRoute();
           }),
           map(() => void 0)
@@ -43,7 +47,8 @@ export class AuthService {
   
     logout(): void {
       localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.USER_KEY);
+      // updateCurrentUser(null) will handle removing USER_KEY from localStorage
+      this.currentUserService.updateCurrentUser(null);
       this.router.navigate(['/auth/login']);
     }
 
@@ -64,7 +69,7 @@ export class AuthService {
       return user?.role ?? null;
     }
 
-    redirectToDefaultRoute(): void {
+    private redirectToDefaultRoute(): void {
       const userRole = this.getRole();
       
       this.logger.debug('User role:', userRole);

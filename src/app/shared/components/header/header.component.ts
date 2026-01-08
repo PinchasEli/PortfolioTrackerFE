@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/user.model';
+import { Observable } from 'rxjs';
+import { CurrentUserService } from '../../../core/services/current-user.service';
 
 @Component({
   selector: 'header',
@@ -9,11 +11,17 @@ import { User } from '../../../core/models/user.model';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
-  user: User | null;
+export class HeaderComponent implements OnInit {
+  user$!: Observable<User | null>;
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.user = this.authService.getUser();
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private currentUserService: CurrentUserService
+  ) {}
+
+  ngOnInit(): void {
+    this.user$ = this.currentUserService.getCurrentUser();
   }
 
   navigateToHome(): void {
