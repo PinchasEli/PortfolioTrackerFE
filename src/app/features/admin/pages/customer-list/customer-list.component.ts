@@ -4,6 +4,7 @@ import { CustomerService } from '../../../../core/services/customer.service';
 import { PaginationParams } from '../../../../shared/models/paginated-response.model';
 import { Role } from '../../../../core/enums/role.enum';
 import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 @Component({
   selector: 'app-customer-list',
@@ -33,18 +34,21 @@ export class CustomerListComponent implements OnInit {
     sortDirection: SortDirection.Desc
   };
   
-  constructor(private customerService: CustomerService) {}
+  constructor(
+    private customerService: CustomerService,
+    private logger: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.loadCustomers();
   }
 
   loadCustomers(): void {
+    this.loading = true;
     this.customerService.getCustomers(this.params).subscribe((customers) => {
       this.customers = customers.items?.map(
         (customer: Customer) => ({
             ...customer,
-            // roleName: Role[customer.role],
             createdAtString: new Date(customer.createdAt).toLocaleDateString(),
             updatedAtString: new Date(customer.updatedAt).toLocaleDateString()
         }) 
@@ -55,6 +59,10 @@ export class CustomerListComponent implements OnInit {
       this.params.pageSize = this.pageSize;
       this.params.pageNumber = this.currentPage;
       this.totalPages = customers.totalPages ?? 1;
+      this.loading = false;
+    }, (error) => {
+      this.loading = false;
+      this.logger.error('Error loading customers:', error);
     });
   }
 

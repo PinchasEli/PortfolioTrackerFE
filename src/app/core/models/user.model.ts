@@ -1,5 +1,5 @@
 import { Role } from "../enums/role.enum";
-import { Customer } from "./customer.modle";
+import { Customer } from "../../shared/models/customer.model";
 
 
 export interface User {

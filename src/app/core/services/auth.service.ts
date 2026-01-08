@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { User } from '../models/user.model';
 import { Role } from '../enums/role.enum';
+import { LoggerService } from './logger.service';
 
 
 @Injectable({
@@ -16,11 +17,15 @@ export class AuthService {
     private readonly TOKEN_KEY = 'auth_token';
     private readonly USER_KEY = 'user';
   
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(
+        private http: HttpClient, 
+        private router: Router,
+        private logger: LoggerService
+    ) {}
   
     login(email: string, password: string): Observable<void> {
-      console.log(email, password);
-      console.log(`${this.apiUrl}/auth/login`);
+      this.logger.debug('Login attempt', { email });
+      this.logger.debug('API URL:', `${this.apiUrl}/auth/login`);
       return this.http
         .post<{ token: string, user: User }>(
             `${this.apiUrl}/auth/login`, { email, password }
@@ -29,7 +34,7 @@ export class AuthService {
           tap(res => {
             localStorage.setItem(this.TOKEN_KEY, res.token);
             localStorage.setItem(this.USER_KEY, JSON.stringify(res.user));
-            console.log(res.user);
+            this.logger.log('User logged in successfully', res.user);
             this.redirectToDefaultRoute();
           }),
           map(() => void 0)
@@ -62,17 +67,17 @@ export class AuthService {
     redirectToDefaultRoute(): void {
       const userRole = this.getRole();
       
-      console.log('User role:', userRole);
+      this.logger.debug('User role:', userRole);
 
       if (userRole === Role.Admin || userRole === Role.SuperAdmin) {
-        console.log('Redirecting to admin');
+        this.logger.debug('Redirecting to admin');
         this.router.navigate(['/admin']);
       } else if (userRole === Role.Customer) {
-        console.log('Redirecting to portfolio');
+        this.logger.debug('Redirecting to portfolio');
         this.router.navigate(['/portfolio']);
       } else {
         // null, undefined, or unknown role → login
-        console.log('No valid role, redirecting to login');
+        this.logger.warn('No valid role, redirecting to login');
         this.router.navigate(['/auth/login']);
       }
     }
