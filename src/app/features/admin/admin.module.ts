@@ -11,17 +11,16 @@ import { CustomerListComponent } from './pages/customer-list/customer-list.compo
 
 
 @NgModule({
-  declarations: [
-    LayoutComponent,
-    AdminSidebarComponent,
-    PortfolioListComponent,
-    CustomerListComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     FormsModule,
     AdminRoutingModule,
-    SharedModule
+    SharedModule,
+    LayoutComponent,
+    AdminSidebarComponent,
+    PortfolioListComponent,
+    CustomerListComponent
   ]
 })
 export class AdminModule { }

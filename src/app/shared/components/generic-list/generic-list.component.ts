@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'generic-list',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './generic-list.component.html',
   styleUrl: './generic-list.component.scss'
 })

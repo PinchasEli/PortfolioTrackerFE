@@ -10,22 +10,21 @@ import { PaginationControlsComponent } from './components/pagination-controls/pa
 
 
 @NgModule({
-  declarations: [
-    ButtonComponent,
+  declarations: [],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     InputComponent,
+    ButtonComponent,
     HeaderComponent,
     GenericListComponent,
     HeaderListComponent,
     PaginationControlsComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
   exports: [
-    ButtonComponent,
     InputComponent,
+    ButtonComponent,
     HeaderComponent,
     GenericListComponent,
     HeaderListComponent,

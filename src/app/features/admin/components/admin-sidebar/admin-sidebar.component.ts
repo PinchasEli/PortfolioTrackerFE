@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 
 interface NavItem {
   label: string;
@@ -9,6 +10,8 @@ interface NavItem {
 
 @Component({
   selector: 'app-admin-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss'
 })

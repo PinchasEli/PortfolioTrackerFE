@@ -1,14 +1,24 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AdminPortfolio } from '../../models/AdminPortfolio.model';
 import { PortfolioService } from '../../../../core/services/portfolio.service';
 import { PaginatedResponse, PaginationParams } from '../../../../shared/models/paginated-response.model';
 import { Currency } from '../../../../shared/enums/currency.enum';
 import { Exchange } from '../../../../shared/enums/exchange.enum';
+import { HeaderListComponent } from '../../../../shared/components/header-list/header-list.component';
+import { GenericListComponent } from '../../../../shared/components/generic-list/generic-list.component';
+import { PaginationControlsComponent } from '../../../../shared/components/pagination-controls/pagination-controls.component';
 
 
 @Component({
   selector: 'app-admin-portfolio-list',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderListComponent,
+    GenericListComponent,
+    PaginationControlsComponent
+  ],
   templateUrl: './portfolio-list.component.html',
   styleUrl: './portfolio-list.component.scss'
 })

@@ -1,13 +1,24 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Customer } from '../../../../shared/models/customer.model';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { PaginationParams } from '../../../../shared/models/paginated-response.model';
 import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { PaginatedResponse } from '../../../../shared/models/paginated-response.model';
+import { HeaderListComponent } from '../../../../shared/components/header-list/header-list.component';
+import { GenericListComponent } from '../../../../shared/components/generic-list/generic-list.component';
+import { PaginationControlsComponent } from '../../../../shared/components/pagination-controls/pagination-controls.component';
 
 @Component({
   selector: 'app-customer-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderListComponent,
+    GenericListComponent,
+    PaginationControlsComponent
+  ],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss'
 })
