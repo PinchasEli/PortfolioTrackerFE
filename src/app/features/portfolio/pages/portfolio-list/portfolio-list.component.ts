@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Portfolio } from '../../../../shared/models/portfolio.model';
 import { PortfolioService } from '../../services/portfolio.service';
 import { Observable } from 'rxjs';
@@ -7,7 +6,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-portfolio-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './portfolio-list.component.html',
   styleUrl: './portfolio-list.component.scss'
 })

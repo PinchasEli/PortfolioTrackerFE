@@ -1,23 +1,21 @@
 <div class="admin-page">
   <header-list title="Portfolio Management"></header-list>
 
-  <div *ngIf="loading" class="loading-spinner">Loading...</div>
-
   <generic-list 
-    *ngIf="!loading"
-    [data]="data" 
+    [data]="displayData()" 
     [headers]="headers"
+    [loading]="loading()"
     (rowSelect)="onRowSelect($event)"
     (actionTrigger)="onActionTrigger($event.action, $event)">
   </generic-list>
 
   <!-- Pagination Controls -->
   <pagination-controls
-    [totalItems]="totalCount"
-    [totalCount]="totalCount"
-    [pageSize]="pageSize"
-    [currentPage]="currentPage"
-    [loading]="loading"
+    [totalItems]="totalCount()"
+    [totalCount]="totalCount()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    [loading]="loading()"
     (pageSizeChanged)="onPageSizeChange($event)"
     (nextPage)="onNextPage()"
     (previousPage)="onPreviousPage()"

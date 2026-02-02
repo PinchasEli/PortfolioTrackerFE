@@ -6,17 +6,17 @@
   </div>
 
   <generic-list 
-    [data]="customers" 
+    [data]="displayData()" 
     [headers]="headers"
-    [loading]="loading"
+    [loading]="loading()"
     (rowSelect)="onRowSelect($event)"></generic-list>
 
   <pagination-controls 
-    [totalCount]="totalCount" 
-    [pageSize]="pageSize" 
-    [currentPage]="currentPage" 
-    [totalItems]="totalCount"  
-    [loading]="loading" 
+    [totalCount]="totalCount()" 
+    [pageSize]="pageSize()" 
+    [currentPage]="currentPage()" 
+    [totalItems]="totalCount()"  
+    [loading]="loading()" 
     (pageSizeChanged)="onPageSizeChange($event)"
     (nextPage)="onNextPage()"
     (previousPage)="onPreviousPage()"

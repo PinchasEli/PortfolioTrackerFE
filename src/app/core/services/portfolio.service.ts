@@ -5,7 +5,6 @@ import { environment } from '../../../environments/environment';
 import { Portfolio } from '../../shared/models/portfolio.model';
 import { AdminPortfolio } from '../../features/admin/models/AdminPortfolio.model';
 import { PaginatedResponse, PaginationParams } from '../../shared/models/paginated-response.model';
-import { SortDirection } from '../../shared/enums/sort-direction.enum';
 
 @Injectable({
   providedIn: 'root'

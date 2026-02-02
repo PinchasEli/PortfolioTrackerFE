@@ -1,13 +1,14 @@
 <nav class="admin-sidebar">
   <ul class="nav-list">
-    <li *ngFor="let item of navItems" 
-        class="nav-item"
-        [class.active]="isActive(item.route)">
-      <a [routerLink]="item.route" class="nav-link">
-        <span class="icon">{{ item.icon }}</span>
-        <span class="label">{{ item.label }}</span>
-      </a>
-    </li>
+    @for (item of navItems; track item.route) {
+      <li class="nav-item"
+          [class.active]="isActive(item.route)">
+        <a [routerLink]="item.route" class="nav-link">
+          <span class="icon">{{ item.icon }}</span>
+          <span class="label">{{ item.label }}</span>
+        </a>
+      </li>
+    }
   </ul>
 </nav>
 

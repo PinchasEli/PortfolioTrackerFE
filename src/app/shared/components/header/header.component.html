@@ -4,7 +4,9 @@
     </div>
 
     <div class="header-right">
-        <p *ngIf="(user$ | async) as user">Welcome, {{ user.email }}</p>
+        @if (user$ | async; as user) {
+            <p>Welcome, {{ user.email }}</p>
+        }
         <app-button label="Logout" type="button" (onClick)="logout()" />
     </div>
 </div>

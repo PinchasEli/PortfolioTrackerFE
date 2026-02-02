@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AdminPortfolio } from '../../models/AdminPortfolio.model';
 import { PortfolioService } from '../../../../core/services/portfolio.service';
 import { PaginatedResponse, PaginationParams } from '../../../../shared/models/paginated-response.model';
@@ -8,19 +8,20 @@ import { Exchange } from '../../../../shared/enums/exchange.enum';
 
 @Component({
   selector: 'app-admin-portfolio-list',
+  standalone: false,
   templateUrl: './portfolio-list.component.html',
   styleUrl: './portfolio-list.component.scss'
 })
 export class PortfolioListComponent implements OnInit {
-  portfolios: AdminPortfolio[] = [];
-  data: any[] = [];
-  loading = false;
+  portfolios = signal<AdminPortfolio[]>([]);
+  loading = signal<boolean>(false);
 
   // Pagination data
-  totalCount = 0;
-  currentPage = 1;
-  pageSize = 10;
-  totalPages = 0;
+  totalCount = signal<number>(0);
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(10);
+
+  totalPages = signal<number>(0);
 
   headers: { [key: string]: string } = {
     'ID': 'id',
@@ -34,45 +35,54 @@ export class PortfolioListComponent implements OnInit {
     'Updated At': 'updatedAt'
   };
 
-  constructor(private portfolioService: PortfolioService) {}
+  displayData = computed(() => this.portfolios().map(portfolio => ({
+    ...portfolio,
+    exchange: Exchange[portfolio.exchange],
+    baseCurrency: Currency[portfolio.baseCurrency],
+    active: portfolio.active ? 'Yes' : 'No',
+    createdAt: new Date(portfolio.createdAt).toLocaleDateString(),
+    updatedAt: new Date(portfolio.updatedAt).toLocaleDateString()
+  })));
+
+  private portfolioService = inject(PortfolioService);
+  // constructor(private portfolioService: PortfolioService) {} OLD VERSION
   
   ngOnInit(): void {
     this.loadPortfolios();
   }
 
-  private transformPortfoliosForDisplay(portfolios: AdminPortfolio[]): any[] {
-    return portfolios.map(portfolio => ({
-      ...portfolio,
-      exchange: Exchange[portfolio.exchange],
-      baseCurrency: Currency[portfolio.baseCurrency],
-      active: portfolio.active ? 'Yes' : 'No',
-      createdAt: new Date(portfolio.createdAt).toLocaleDateString(),
-      updatedAt: new Date(portfolio.updatedAt).toLocaleDateString()
-    }));
-  }
+  // OLD VERSION
+  // private transformPortfoliosForDisplay(portfolios: AdminPortfolio[]): any[] {
+  //   return portfolios.map(portfolio => ({
+  //     ...portfolio,
+  //     exchange: Exchange[portfolio.exchange],
+  //     baseCurrency: Currency[portfolio.baseCurrency],
+  //     active: portfolio.active ? 'Yes' : 'No',
+  //     createdAt: new Date(portfolio.createdAt).toLocaleDateString(),
+  //     updatedAt: new Date(portfolio.updatedAt).toLocaleDateString()
+  //   }));
+  // }
 
   loadPortfolios(): void {
-    this.loading = true;
+    this.loading.set(true);
     
     const params: PaginationParams = {
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize
+      pageNumber: this.currentPage(),
+      pageSize: this.pageSize()
     };
     
     this.portfolioService.getAllPortfolios(params).subscribe({
       next: (response: PaginatedResponse<AdminPortfolio>) => {
-        this.portfolios = response.items;
-        this.totalCount = response.totalCount;
-        this.currentPage = response.pageNumber;
-        this.pageSize = response.pageSize;
-        this.totalPages = response.totalPages;
-        this.loading = false;
-        this.data = this.transformPortfoliosForDisplay(response.items);
-        console.log(this.data);
+        this.portfolios.set(response.items);
+        this.totalCount.set(response.totalCount);
+        this.currentPage.set(response.pageNumber);
+        this.pageSize.set(response.pageSize);
+        this.totalPages.set(response.totalPages);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Failed to load portfolios:', err);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
@@ -86,27 +96,27 @@ export class PortfolioListComponent implements OnInit {
   }
 
   onPageSizeChange(newSize: number): void {
-    this.pageSize = newSize;
-    this.currentPage = 1;
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
     this.loadPortfolios();
   }
 
   onNextPage(): void {
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+      this.currentPage.set(this.currentPage() + 1);
       this.loadPortfolios();
     }
   }
 
   onPreviousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
       this.loadPortfolios();
     }
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
+    this.currentPage.set(page);
     this.loadPortfolios();
   }
 }

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Customer } from '../../../../shared/models/customer.model';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { PaginationParams } from '../../../../shared/models/paginated-response.model';
-import { Role } from '../../../../core/enums/role.enum';
 import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
 import { LoggerService } from '../../../../core/services/logger.service';
+import { PaginatedResponse } from '../../../../shared/models/paginated-response.model';
 
 @Component({
   selector: 'app-customer-list',
@@ -12,12 +12,13 @@ import { LoggerService } from '../../../../core/services/logger.service';
   styleUrl: './customer-list.component.scss'
 })
 export class CustomerListComponent implements OnInit {
-  customers: Customer[] = [];
-  totalCount: number = 0;
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalPages: number = 1;
-  loading: boolean = false;
+  customers = signal<Customer[]>([]);
+
+  totalCount = signal<number>(0);
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(10);
+  totalPages = signal<number>(1);
+  loading = signal<boolean>(false);
   headers: { [displayName: string]: string } = {
     'ID': 'id',
     'Name': 'fullName',
@@ -27,42 +28,47 @@ export class CustomerListComponent implements OnInit {
     'Created At': 'createdAt',
     'Updated At': 'updatedAt'
   };
-  params: PaginationParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'createdAt',
-    sortDirection: SortDirection.Desc
-  };
   
-  constructor(
-    private customerService: CustomerService,
-    private logger: LoggerService
-  ) {}
+  // Computed params - automatically updates when currentPage or pageSize changes
+  params = computed<PaginationParams>(() => ({
+    pageNumber: this.currentPage(),
+    pageSize: this.pageSize(),
+    sortBy: 'createdAt',
+    sortDirection: SortDirection.Desc,
+  }));
+
+  // computed property for displaying data
+  displayData = computed(() => this.customers().map(customer => ({
+    ...customer,
+    createdAtString: new Date(customer.createdAt).toLocaleDateString(),
+    updatedAtString: new Date(customer.updatedAt).toLocaleDateString()
+  })));
+
+  // Inject services
+  private customerService = inject(CustomerService);
+  private logger = inject(LoggerService);
 
   ngOnInit(): void {
     this.loadCustomers();
   }
 
   loadCustomers(): void {
-    this.loading = true;
-    this.customerService.getCustomers(this.params).subscribe((customers) => {
-      this.customers = customers.items?.map(
-        (customer: Customer) => ({
-            ...customer,
-            createdAtString: new Date(customer.createdAt).toLocaleDateString(),
-            updatedAtString: new Date(customer.updatedAt).toLocaleDateString()
-        }) 
-      ) ?? [];
-      this.totalCount = customers.totalCount ?? 0;
-      this.pageSize = customers.pageSize ?? 10;
-      this.currentPage = customers.pageNumber ?? 1;
-      this.params.pageSize = this.pageSize;
-      this.params.pageNumber = this.currentPage;
-      this.totalPages = customers.totalPages ?? 1;
-      this.loading = false;
-    }, (error) => {
-      this.loading = false;
-      this.logger.error('Error loading customers:', error);
+    this.loading.set(true);
+
+    this.customerService.getCustomers(this.params()).subscribe({
+      next: (response: PaginatedResponse<Customer>) => {
+        this.customers.set(response.items);
+        this.totalCount.set(response.totalCount);
+        this.pageSize.set(response.pageSize);
+        this.currentPage.set(response.pageNumber);
+        // No need to manually update params - computed handles it automatically!
+        this.totalPages.set(response.totalPages);
+        this.loading.set(false);
+      },
+      error: (error: any) => {
+        this.loading.set(false);
+        this.logger.error('Error loading customers:', error);
+      }
     });
   }
 
@@ -71,32 +77,27 @@ export class CustomerListComponent implements OnInit {
   }
 
   onPageSizeChange(newSize: number): void {
-    this.pageSize = newSize;
-    this.currentPage = 1;
-    this.params.pageSize = newSize;
-    this.params.pageNumber = 1;
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
     this.loadCustomers();
   }
 
   onNextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.params.pageNumber = this.currentPage;
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
       this.loadCustomers();
     }
   }
 
   onPreviousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.params.pageNumber = this.currentPage;
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
       this.loadCustomers();
     }
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
-    this.params.pageNumber = page;
+    this.currentPage.set(page);
     this.loadCustomers();
   }
 }

@@ -1,4 +1,5 @@
-<div class="pagination" *ngIf="!loading && totalCount > 0">
+@if (!loading && totalCount > 0) {
+  <div class="pagination">
     <div class="pagination-info">
       Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} items
     </div>
@@ -12,13 +13,14 @@
       </button>
 
       <div class="page-numbers">
-        <button 
-          *ngFor="let page of getPageNumbers()" 
-          class="btn-page"
-          [class.active]="page === currentPage"
-          (click)="goToPage(page)">
-          {{ page }}
-        </button>
+        @for (page of getPageNumbers(); track page) {
+          <button 
+            class="btn-page"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)">
+            {{ page }}
+          </button>
+        }
       </div>
 
       <button 
@@ -38,4 +40,5 @@
         <option [value]="100">100</option>
       </select>
     </div>
-</div>
+  </div>
+}
