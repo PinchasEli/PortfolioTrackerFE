@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,15 +6,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './button.component.html',
-  styleUrl: './button.component.scss'
+  styleUrl: './button.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonComponent {
-  @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  @Input() label: string = '';
-  @Input() disabled: boolean = false;
-  @Input() loading: boolean = false;
-  @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
-
-  constructor() {
-  }
+  type = input<'button' | 'submit' | 'reset'>('button');
+  label = input<string>('');
+  disabled = input<boolean>(false);
+  loading = input<boolean>(false);
+  onClick = output<void>();
 }

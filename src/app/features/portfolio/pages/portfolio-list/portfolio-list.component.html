@@ -1,9 +1,11 @@
-@if (portfolios$ | async; as portfolios) {
+@if (portfolios().length > 0) {
   <ul>
-    @for (p of portfolios; track p.id) {
+    @for (p of portfolios(); track p.id) {
       <li>
-        {{ p.name }} – {{ p.BaseCurrency | currency }}
+        {{ p.name }} – {{ p.baseCurrency | currency }}
       </li>
     }
   </ul>
+} @else {
+  <p>No portfolios found.</p>
 }

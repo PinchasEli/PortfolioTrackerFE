@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -13,15 +13,16 @@ interface NavItem {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './admin-sidebar.component.html',
-  styleUrl: './admin-sidebar.component.scss'
+  styleUrl: './admin-sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminSidebarComponent {
+  private router = inject(Router);
+
   navItems: NavItem[] = [
     { label: 'Portfolios', route: '/admin/portfolios', icon: '📊' },
     { label: 'Customers', route: '/admin/customers', icon: '👥' }
   ];
-
-  constructor(private router: Router) {}
 
   isActive(route: string): boolean {
     return this.router.url === route;

@@ -1,13 +1,13 @@
-@if (!loading && totalCount > 0) {
+@if (!loading() && totalCount() > 0) {
   <div class="pagination">
     <div class="pagination-info">
-      Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} items
+      Showing {{ (currentPage() - 1) * pageSize() + 1 }} to {{ Math.min(currentPage() * pageSize(), totalCount()) }} of {{ totalCount() }} items
     </div>
 
     <div class="pagination-controls">
       <button 
         class="btn-pagination" 
-        [disabled]="currentPage === 1"
+        [disabled]="currentPage() === 1"
         (click)="previousPageFn()">
         ‹ Previous
       </button>
@@ -16,7 +16,7 @@
         @for (page of getPageNumbers(); track page) {
           <button 
             class="btn-page"
-            [class.active]="page === currentPage"
+            [class.active]="page === currentPage()"
             (click)="goToPage(page)">
             {{ page }}
           </button>
@@ -25,7 +25,7 @@
 
       <button 
         class="btn-pagination" 
-        [disabled]="currentPage === totalPages"
+        [disabled]="currentPage() === totalPages()"
         (click)="nextPageFn()">
         Next ›
       </button>
@@ -33,7 +33,7 @@
 
     <div class="page-size-selector">
       <label>Items per page:</label>
-      <select [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+      <select [ngModel]="pageSize()" (ngModelChange)="changePageSize($event)">
         <option [value]="10">10</option>
         <option [value]="25">25</option>
         <option [value]="50">50</option>

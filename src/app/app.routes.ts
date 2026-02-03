@@ -8,19 +8,19 @@ export const routes: Routes = [
     { 
         path: 'auth', 
         loadChildren: () => 
-            import('./features/auth/auth.module').then(m => m.AuthModule) 
+            import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) 
     },
     { 
         path: 'portfolio',
         loadChildren: () => 
-            import('./features/portfolio/portfolio.module').then(m => m.PortfolioModule),
+            import('./features/portfolio/portfolio.routes').then(m => m.PORTFOLIO_ROUTES),
         canActivate: [AuthGuard, RoleGuard],
         data: { roles: [Role.Customer, Role.Admin, Role.SuperAdmin] }
     },
     { 
         path: 'admin',
         loadChildren: () => 
-            import('./features/admin/admin.module').then(m => m.AdminModule),
+            import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
         canActivate: [AuthGuard, RoleGuard],
         data: { roles: [Role.Admin, Role.SuperAdmin] }
     },

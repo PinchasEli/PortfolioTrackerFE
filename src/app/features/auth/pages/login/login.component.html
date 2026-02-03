@@ -17,11 +17,13 @@
         <app-button 
             label="Login" 
             type="submit" 
-            [disabled]="loginForm.invalid || loading" 
-            [loading]="loading" />
+            [disabled]="loginForm.invalid || loading()" 
+            [loading]="loading()" />
     
-        <p *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
-        </p>
+        @if (errorMessage()) {
+            <p class="error-message">
+                {{ errorMessage() }}
+            </p>
+        }
     </form>
 </div>

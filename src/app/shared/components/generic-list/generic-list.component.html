@@ -1,25 +1,25 @@
-@if (loading) {
+@if (loading()) {
   <div class="loading-spinner">Loading...</div>
 } @else {
   <table class="data-table">
     <thead>
       <tr>
-        @for (displayName of headerKeys; track displayName) {
+        @for (displayName of headerKeys(); track displayName) {
           <th>{{ displayName }}</th>
         }
       </tr>
     </thead>
     <tbody>
-      @for (row of data; track row) {
+      @for (row of data(); track row) {
         <tr (click)="onRowSelect(row)">
-          @for (displayName of headerKeys; track displayName) {
+          @for (displayName of headerKeys(); track displayName) {
             <td>{{ row[getDataKey(displayName)] }}</td>
           }
         </tr>
       }
       @empty {
         <tr>
-          <td [attr.colspan]="headerKeys.length">No data available</td>
+          <td [attr.colspan]="headerKeys().length">No data available</td>
         </tr>
       }
     </tbody>

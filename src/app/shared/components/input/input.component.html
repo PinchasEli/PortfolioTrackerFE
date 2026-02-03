@@ -1,13 +1,13 @@
 <div class="field">
-    <label>{{ label }}</label>
+    <label>{{ label() }}</label>
   
     <input
-      [type]="type"
-      [formControl]="control"
+      [type]="type()"
+      [formControl]="control()"
     />
   
-    @if (control.touched && control.invalid) {
-        <small>{{errorMessage || 'Field is required'}}</small>
+    @if (control().touched && control().invalid) {
+        <small>{{errorMessage() || 'Field is required'}}</small>
     }
 </div>
   

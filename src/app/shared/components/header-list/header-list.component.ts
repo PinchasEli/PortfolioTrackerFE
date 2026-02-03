@@ -1,12 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'header-list',
   standalone: true,
   imports: [],
   templateUrl: './header-list.component.html',
-  styleUrl: './header-list.component.scss'
+  styleUrl: './header-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderListComponent {
-  @Input() title: string = '';
+  title = input<string>('');
 }

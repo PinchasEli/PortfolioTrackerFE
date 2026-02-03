@@ -1,24 +1,19 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Portfolio } from '../../../../shared/models/portfolio.model';
-import { PortfolioService } from '../../services/portfolio.service';
-import { Observable } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PortfolioService } from '../../../../core/services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio-list',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './portfolio-list.component.html',
-  styleUrl: './portfolio-list.component.scss'
+  styleUrl: './portfolio-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PortfolioListComponent {
-  portfolios$: Observable<Portfolio[]>;
+  private portfolioService = inject(PortfolioService);
 
-  constructor(private portfolioService: PortfolioService) {
-    this.portfolios$ = this.portfolioService.getPortfolios();
-  }
-
-  ngOnInit(): void {
-    this.portfolioService.loadPortfolios();
-  }
+  // Declarative signal-based data fetching
+  portfolios = toSignal(this.portfolioService.getMyPortfolios(), { initialValue: [] });
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,24 +6,21 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './generic-list.component.html',
-  styleUrl: './generic-list.component.scss'
+  styleUrl: './generic-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericListComponent {
-  @Input() data: any[] = [];
-  @Input() headers: { [displayName: string]: string } = {};
-  @Input() loading: boolean = false;
+  data = input<any[]>([]);
+  headers = input<{ [displayName: string]: string }>({});
+  loading = input<boolean>(false);
 
-  @Output() rowSelect: EventEmitter<any> = new EventEmitter<any>();
-  @Output() actionTrigger: EventEmitter<any> = new EventEmitter<any>();
+  rowSelect = output<any>();
+  actionTrigger = output<any>();
 
-  constructor() {}
-
-  get headerKeys(): string[] {
-    return Object.keys(this.headers);
-  }
+  headerKeys = computed(() => Object.keys(this.headers()));
 
   getDataKey(displayName: string): string {
-    return this.headers[displayName];
+    return this.headers()[displayName];
   }
 
   onRowSelect(row: any): void {

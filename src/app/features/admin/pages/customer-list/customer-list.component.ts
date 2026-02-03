@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Customer } from '../../../../shared/models/customer.model';
 import { CustomerService } from '../../../../core/services/customer.service';
@@ -21,7 +21,8 @@ import { switchMap, tap } from 'rxjs/operators';
     PaginationControlsComponent
   ],
   templateUrl: './customer-list.component.html',
-  styleUrl: './customer-list.component.scss'
+  styleUrl: './customer-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerListComponent {
   headers: { [displayName: string]: string } = {

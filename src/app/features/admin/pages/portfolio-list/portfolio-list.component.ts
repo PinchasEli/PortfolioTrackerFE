@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminPortfolio } from '../../models/AdminPortfolio.model';
 import { PortfolioService } from '../../../../core/services/portfolio.service';
@@ -22,7 +22,8 @@ import { PaginationParams } from '../../../../shared/models/paginated-response.m
     PaginationControlsComponent
   ],
   templateUrl: './portfolio-list.component.html',
-  styleUrl: './portfolio-list.component.scss'
+  styleUrl: './portfolio-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PortfolioListComponent {
   headers: { [key: string]: string } = {

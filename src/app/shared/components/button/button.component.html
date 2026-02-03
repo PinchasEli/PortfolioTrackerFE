@@ -1,11 +1,11 @@
 <button 
     class="btn"
-    [type]="type" 
+    [type]="type()" 
     (click)="onClick.emit()"
-    [disabled]="disabled">
-    @if (loading) {
+    [disabled]="disabled()">
+    @if (loading()) {
         <div class="loading-spinner"></div>
     } @else {
-        {{ label }}
+        {{ label() }}
     }
 </button>
