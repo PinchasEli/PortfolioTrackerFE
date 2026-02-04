@@ -21,4 +21,8 @@ export class CustomerService {
     }
     return this.http.get<PaginatedResponse<Customer>>(this.apiUrl, { params: httpParams });
   }
+
+  createCustomer(customerData: any): Observable<Customer> {
+    return this.http.post<Customer>(`${this.apiUrl}`, customerData);
+  }
 }

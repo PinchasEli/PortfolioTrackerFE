@@ -14,5 +14,7 @@ export class ButtonComponent {
   label = input<string>('');
   disabled = input<boolean>(false);
   loading = input<boolean>(false);
+  variant = input<'primary' | 'secondary'>('primary');
+  fullWidth = input<boolean>(true);
   onClick = output<void>();
 }

@@ -1,0 +1,13 @@
+@if (isOpen()) {
+  <div class="dialog-backdrop" (click)="onBackdropClick($event)">
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2>{{ title() }}</h2>
+        <button class="close-btn" (click)="close()" type="button">&times;</button>
+      </div>
+      <div class="dialog-content">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

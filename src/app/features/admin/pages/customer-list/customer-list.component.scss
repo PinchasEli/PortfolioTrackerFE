@@ -1,4 +1,23 @@
 @import '../portfolio-list/portfolio-list.component.scss';
 
-
-
+.error-banner {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  p {
+    color: #c33;
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    min-width: auto;
+  }
+}

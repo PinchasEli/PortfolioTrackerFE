@@ -8,8 +8,12 @@ import { LoggerService } from '../../../../core/services/logger.service';
 import { HeaderListComponent } from '../../../../shared/components/header-list/header-list.component';
 import { GenericListComponent } from '../../../../shared/components/generic-list/generic-list.component';
 import { PaginationControlsComponent } from '../../../../shared/components/pagination-controls/pagination-controls.component';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
+import { AddCustomerFormComponent } from '../../components/add-customer-form/add-customer-form.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, combineLatestWith, map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-customer-list',
@@ -18,7 +22,10 @@ import { switchMap, tap } from 'rxjs/operators';
     CommonModule,
     HeaderListComponent,
     GenericListComponent,
-    PaginationControlsComponent
+    PaginationControlsComponent,
+    DialogComponent,
+    AddCustomerFormComponent,
+    ButtonComponent
   ],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss',
@@ -35,6 +42,9 @@ export class CustomerListComponent {
     'Updated At': 'updatedAt'
   };
   loading = signal<boolean>(false);
+  error = signal<string>('');
+  isDialogOpen = signal<boolean>(false);
+  refreshTrigger = signal<number>(0);
   
   currentPage = signal<number>(1);
   pageSize = signal<number>(10);
@@ -50,10 +60,25 @@ export class CustomerListComponent {
     sortDirection: SortDirection.Desc,
   })));
 
+  private refresh$ = toObservable(this.refreshTrigger);
+
   private response = toSignal(
     this.params$.pipe(
-      tap(() => this.loading.set(true)),
-      switchMap((params: PaginationParams) => this.customerService.getCustomers(params)),
+      combineLatestWith(this.refresh$),
+      map(([params]) => params),
+      tap(() => {
+        this.loading.set(true);
+        this.error.set('');
+      }),
+      switchMap((params: PaginationParams) => 
+        this.customerService.getCustomers(params).pipe(
+          catchError((error) => {
+            this.logger.error('Error loading customers:', error);
+            this.error.set(error.error?.message || 'Failed to load customers');
+            return of({ items: [], totalCount: 0, totalPages: 0, pageNumber: 1, pageSize: 10 });
+          })
+        )
+      ),
       tap(() => this.loading.set(false))
     )
   );
@@ -64,12 +89,13 @@ export class CustomerListComponent {
   // computed property for displaying data
   displayData = computed(() => this.customers().map(customer => ({
     ...customer,
-    createdAtString: new Date(customer.createdAt).toLocaleDateString(),
-    updatedAtString: new Date(customer.updatedAt).toLocaleDateString()
+    createdAt: new Date(customer.createdAt).toLocaleDateString(),
+    updatedAt: new Date(customer.updatedAt).toLocaleDateString()
   })));
 
   onRowSelect(row: Customer): void {
-    console.log(row);
+    this.logger.log('Customer selected:', row);
+    // TODO: Implement row selection logic (e.g., navigate to detail page)
   }
 
   onPageSizeChange(newSize: number): void {
@@ -91,5 +117,23 @@ export class CustomerListComponent {
 
   onPageChange(page: number): void {
     this.currentPage.set(page);
+  }
+
+  openAddCustomerDialog(): void {
+    this.isDialogOpen.set(true);
+  }
+
+  closeDialog(): void {
+    this.isDialogOpen.set(false);
+  }
+
+  onCustomerCreated(): void {
+    this.closeDialog();
+    this.refreshList();
+  }
+
+  refreshList(): void {
+    // Increment trigger to force a refresh
+    this.refreshTrigger.update(v => v + 1);
   }
 }

@@ -8,9 +8,17 @@
     
     .header-left {
         cursor: pointer;
-        img {
-            width: 100px;
-            height: 100px;
+        
+        .logo {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1976d2;
+            transition: color 0.2s;
+            
+            &:hover {
+                color: #1565c0;
+            }
         }
     }
 

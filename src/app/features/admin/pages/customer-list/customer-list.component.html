@@ -2,8 +2,20 @@
   <header-list title="Customer Management"></header-list>
   
   <div class="page-actions">
-    <button class="btn btn-primary">+ Add Customer</button>
+    <app-button 
+      label="+ Add Customer" 
+      [fullWidth]="false" 
+      variant="primary"
+      (onClick)="openAddCustomerDialog()">
+    </app-button>
   </div>
+
+  @if (error()) {
+    <div class="error-banner">
+      <p>{{ error() }}</p>
+      <button class="btn btn-secondary" (click)="refreshList()">Retry</button>
+    </div>
+  }
 
   <generic-list 
     [data]="displayData()" 
@@ -21,5 +33,15 @@
     (nextPage)="onNextPage()"
     (previousPage)="onPreviousPage()"
     (pageChanged)="onPageChange($event)"></pagination-controls>
+
+  <app-dialog 
+    [isOpen]="isDialogOpen()" 
+    [title]="'Add New Customer'"
+    (onClose)="closeDialog()">
+    <app-add-customer-form 
+      (onSuccess)="onCustomerCreated()"
+      (onCancel)="closeDialog()">
+    </app-add-customer-form>
+  </app-dialog>
 </div>
 

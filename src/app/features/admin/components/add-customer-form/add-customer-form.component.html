@@ -1,0 +1,48 @@
+<form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="customer-form">
+  <app-input
+    label="Full Name"
+    type="text"
+    [control]="$any(customerForm.get('fullName'))"
+    [errorMessage]="getErrorMessage('fullName')" />
+
+  <app-input
+    label="Email"
+    type="email"
+    [control]="$any(customerForm.get('email'))"
+    [errorMessage]="getErrorMessage('email')" />
+
+  <app-input
+    label="Password"
+    type="password"
+    [control]="$any(customerForm.get('password'))"
+    [errorMessage]="getErrorMessage('password')" />
+
+  <app-input
+    label="Confirm Password"
+    type="password"
+    [control]="$any(customerForm.get('confirmPassword'))"
+    [errorMessage]="getErrorMessage('confirmPassword')" />
+
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() }}</p>
+  }
+
+  <div class="form-actions">
+    <app-button
+      type="button"
+      label="Cancel"
+      variant="secondary"
+      [fullWidth]="false"
+      [disabled]="loading()"
+      (onClick)="cancel()">
+    </app-button>
+    <app-button
+      type="submit"
+      label="Create Customer"
+      variant="primary"
+      [fullWidth]="false"
+      [disabled]="customerForm.invalid || loading()"
+      [loading]="loading()">
+    </app-button>
+  </div>
+</form>
